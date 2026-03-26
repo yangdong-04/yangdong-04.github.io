@@ -1,0 +1,520 @@
+/* 主题变量 - 深色主题（默认） */
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-mid: #581c87;
+    --bg-gradient-end: #0f172a;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent-purple: #8b5cf6;
+    --accent-pink: #ec4899;
+    --card-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* 浅色主题 */
+body.theme-light {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-gradient-start: #f8fafc;
+    --bg-gradient-mid: #e0e7ff;
+    --bg-gradient-end: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: rgba(30, 41, 59, 0.6);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --card-bg: rgba(255, 255, 255, 0.8);
+}
+
+/* 海洋主题 */
+body.theme-ocean {
+    --bg-primary: #0c1929;
+    --bg-secondary: #132f4c;
+    --bg-gradient-start: #0c1929;
+    --bg-gradient-mid: #075985;
+    --bg-gradient-end: #0c1929;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent-purple: #0ea5e9;
+    --accent-pink: #06b6d4;
+    --card-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* 森林主题 */
+body.theme-forest {
+    --bg-primary: #052e16;
+    --bg-secondary: #14532d;
+    --bg-gradient-start: #052e16;
+    --bg-gradient-mid: #166534;
+    --bg-gradient-end: #052e16;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent-purple: #22c55e;
+    --accent-pink: #84cc16;
+    --card-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* 全局样式 */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 92, 246, 0.5) transparent;
+}
+
+body {
+    background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+    color: var(--text-primary);
+    transition: all 0.5s ease;
+}
+
+body.theme-light {
+    background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+}
+
+body.theme-ocean {
+    background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+}
+
+body.theme-forest {
+    background: linear-gradient(to bottom right, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(139, 92, 246, 0.5);
+    border-radius: 3px;
+}
+
+/* 平滑过渡动画 */
+.page {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 日历格子样式 */
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.calendar-day:hover {
+    background: rgba(139, 92, 246, 0.3);
+}
+
+.calendar-day.today {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    font-weight: 600;
+}
+
+.calendar-day.selected {
+    background: rgba(139, 92, 246, 0.5);
+    border: 2px solid #8b5cf6;
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+}
+
+.calendar-day.has-task::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 6px;
+    height: 6px;
+    background: #ec4899;
+    border-radius: 50%;
+}
+
+
+
+.calendar-day {
+    position: relative;
+}
+
+/* 任务项样式 */
+.task-item {
+    transition: all 0.2s;
+}
+
+.task-item:hover {
+    transform: translateX(4px);
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+/* 心情按钮 */
+.mood-btn {
+    transition: all 0.2s;
+}
+
+.mood-btn:hover {
+    transform: scale(1.1);
+}
+
+.mood-btn.selected {
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+/* 卡片悬停效果 */
+.project-card, .goal-card {
+    transition: all 0.3s;
+}
+
+.project-card:hover, .goal-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 模态框动画 */
+#modal-container {
+    transition: opacity 0.2s;
+}
+
+#modal-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#modal-container:not(.hidden) {
+    opacity: 1;
+}
+
+#modal-content {
+    transition: transform 0.3s;
+}
+
+#modal-container.hidden #modal-content {
+    transform: scale(0.95);
+}
+
+#modal-container:not(.hidden) #modal-content {
+    transform: scale(1);
+}
+
+/* 复选框自定义样式 */
+.checkbox-custom {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.checkbox-custom:checked {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border-color: transparent;
+}
+
+.checkbox-custom:checked::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* 进度条 */
+.progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #8b5cf6, #ec4899);
+    transition: width 0.5s ease-out;
+}
+
+/* 折叠动画 - 直接切换，无过渡动画 */
+.collapsible:not(.collapsed) {
+    display: block;
+}
+
+.collapsible.collapsed {
+    display: none;
+}
+
+/* 阶段内容折叠时隐藏上边框 */
+.phase-content.collapsed {
+    border-top: none !important;
+}
+
+/* 导航按钮激活状态 */
+.nav-btn.active {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2));
+    color: white;
+    border-left: 3px solid #8b5cf6;
+}
+
+/* 输入框、下拉框基础样式 */
+input, textarea, select {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* 下拉框特殊样式 */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 下拉框选项样式 */
+select option {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* 输入框焦点样式 */
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+    border-color: var(--accent-purple);
+}
+
+/* 图表容器固定高度 */
+#goal-chart {
+    max-height: 200px;
+}
+
+/* 防止页面无限扩展 */
+#page-goal-detail {
+    overflow: auto;
+}
+
+/* Toast 组件样式 */
+.toast {
+    padding: 16px 24px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: toastIn 0.3s ease-out;
+    backdrop-filter: blur(10px);
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.toast.warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.toast.hiding {
+    animation: toastOut 0.3s ease-in forwards;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* 任务完成动画 */
+.task-item.completing,
+.subtask-item.completing,
+.phase-task-item.completing {
+    animation: taskComplete 0.5s ease-out;
+}
+
+@keyframes taskComplete {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+        background: rgba(34, 197, 94, 0.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 拖拽排序样式 */
+.sortable-ghost {
+    opacity: 0.4;
+    background: rgba(139, 92, 246, 0.2) !important;
+}
+
+.sortable-drag {
+    cursor: grab;
+}
+
+.sortable-chosen {
+    cursor: grabbing;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    transform: scale(1.02);
+}
+
+/* 拖拽手柄 */
+.drag-handle {
+    cursor: grab;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.drag-handle:hover {
+    opacity: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* 加载指示器 */
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #8b5cf6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 主题切换模态框中的主题选项 */
+.theme-option {
+    transition: all 0.2s;
+}
+
+.theme-option:hover {
+    transform: scale(1.02);
+}
+
+.theme-option.selected {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+/* 备份恢复模态框 */
+.backup-option {
+    transition: all 0.2s;
+}
+
+.backup-option:hover {
+    background: rgba(139, 92, 246, 0.2);
+}
+
+/* 每日重复任务标记（简化） */
+.calendar-day.has-daily-repeat::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 6px;
+    height: 6px;
+    background: #3b82f6;
+    border-radius: 50%;
+}
+
+/* 非每日重复任务标记（优先级高于每日重复，低于单次任务） */
+.calendar-day.has-custom-repeat::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+}
+
+/* 单次任务截止日期标记（最高优先级） */
+.calendar-day.has-deadline::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 10px;
+    height: 10px;
+    background: #f59e0b;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+}
+
+.calendar-day.has-task.has-deadline::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 10px;
+    height: 10px;
+    background: #f59e0b;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+}
+
+

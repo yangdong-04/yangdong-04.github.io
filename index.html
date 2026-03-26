@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人任务管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
+    <div id="app" class="flex min-h-screen">
+        <!-- 侧边栏 -->
+        <aside id="sidebar" class="w-64 bg-black/30 backdrop-blur-xl border-r border-white/10 flex flex-col">
+            <!-- 头像和昵称区域 -->
+            <div class="p-6 border-b border-white/10">
+                <div class="flex flex-col items-center">
+                    <div class="relative mb-4">
+                        <div id="avatar-container" class="w-24 h-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center cursor-pointer overflow-hidden group">
+                            <img id="avatar-img" src="" alt="头像" class="w-full h-full object-cover hidden">
+                            <i id="avatar-icon" class="fas fa-user text-4xl text-white/80"></i>
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <i class="fas fa-camera text-2xl"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="avatar-input" accept="image/*" class="hidden">
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="nickname-input" placeholder="点击编辑昵称" 
+                               class="bg-transparent text-center text-xl font-semibold border-b-2 border-transparent hover:border-white/30 focus:border-purple-400 focus:outline-none transition-all w-40">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 导航菜单 -->
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <button data-page="dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-all">
+                            <i class="fas fa-home w-5"></i>
+                            <span>仪表盘</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button data-page="project" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:bg-white/10 hover:text-white transition-all">
+                            <i class="fas fa-folder-open w-5"></i>
+                            <span>项目管理</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button data-page="goal" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:bg-white/10 hover:text-white transition-all">
+                            <i class="fas fa-rocket w-5"></i>
+                            <span>长期目标</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button data-page="mood" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:bg-white/10 hover:text-white transition-all">
+                            <i class="fas fa-heart w-5"></i>
+                            <span>心情记录</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- 底部功能区 -->
+            <div class="p-4 border-t border-white/10 space-y-2">
+                <!-- 主题切换 -->
+                <button id="theme-toggle" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:bg-white/10 hover:text-white transition-all">
+                    <i class="fas fa-moon w-5"></i>
+                    <span>切换主题</span>
+                </button>
+                <!-- 数据备份 -->
+                <button id="backup-data" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:bg-white/10 hover:text-white transition-all">
+                    <i class="fas fa-download w-5"></i>
+                    <span>备份数据</span>
+                </button>
+                <!-- 数据恢复 -->
+                <button id="restore-data" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 hover:bg-white/10 hover:text-white transition-all">
+                    <i class="fas fa-upload w-5"></i>
+                    <span>恢复数据</span>
+                </button>
+                <input type="file" id="restore-input" accept=".json" class="hidden">
+            </div>
+        </aside>
+        
+        <!-- 主内容区域 -->
+        <main class="flex-1 overflow-auto">
+            <!-- 仪表盘页面 -->
+            <div id="page-dashboard" class="page p-8">
+                <div class="max-w-6xl mx-auto">
+                    <!-- 每日一句 -->
+                    <div id="quote-section" class="mb-8 bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-quote-left text-4xl text-purple-400/50 mt-1"></i>
+                            <div class="flex-1">
+                                <p id="quote-text" class="text-2xl font-light italic text-white/90 leading-relaxed"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 日历和今日任务 -->
+                    <div class="grid lg:grid-cols-3 gap-6">
+                        <!-- 日历 -->
+                        <div class="lg:col-span-2 bg-black/30 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-semibold">
+                                    <i class="fas fa-calendar-alt mr-2 text-purple-400"></i>
+                                    日历
+                                </h2>
+                                <div class="flex items-center gap-2">
+                                    <button id="prev-month" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span id="current-month" class="text-lg font-medium min-w-[120px] text-center"></span>
+                                    <button id="next-month" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="calendar-grid" class="grid grid-cols-7 gap-2">
+                                <!-- 日历格子由JS生成 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 今日任务 -->
+                        <div class="bg-black/30 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-xl font-semibold">
+                                    <i class="fas fa-tasks mr-2 text-pink-400"></i>
+                                    <span id="task-date-title">今日任务</span>
+                                </h2>
+                                <button id="add-temp-task" class="p-2 rounded-lg bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 transition-colors">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div id="task-list" class="space-y-3 max-h-96 overflow-auto">
+                                <!-- 任务列表由JS生成 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+            
+            <!-- 项目管理页面 -->
+            <div id="page-project" class="page p-8 hidden">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-3xl font-bold">
+                            <i class="fas fa-folder-open mr-3 text-purple-400"></i>
+                            项目管理
+                        </h1>
+                        <button id="create-project" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            新建项目
+                        </button>
+                    </div>
+                    
+                    <!-- 搜索和筛选区域 -->
+                    <div class="mb-6 space-y-4">
+                        <!-- 搜索框 -->
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                            <input type="text" id="project-search" placeholder="搜索项目名称或描述..." 
+                                   class="w-full bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:border-purple-400 transition-colors">
+                        </div>
+                        <!-- 标签筛选 -->
+                        <div id="project-tag-filters" class="flex flex-wrap gap-2">
+                            <!-- 标签筛选按钮由JS生成 -->
+                        </div>
+                    </div>
+                    
+                    <div id="project-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 项目列表由JS生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目详情页面 -->
+            <div id="page-project-detail" class="page p-8 hidden">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center gap-4 mb-8">
+                        <button id="back-to-projects" class="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h1 id="project-detail-title" class="text-3xl font-bold"></h1>
+                    </div>
+                    <!-- 项目详情内容由JS生成 -->
+                    <div id="project-detail-content"></div>
+                </div>
+            </div>
+            
+            <!-- 长期目标页面 -->
+            <div id="page-goal" class="page p-8 hidden">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-3xl font-bold">
+                            <i class="fas fa-rocket mr-3 text-pink-400"></i>
+                            长期目标
+                        </h1>
+                        <button id="create-goal" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            新建目标
+                        </button>
+                    </div>
+                    
+                    <!-- 搜索和筛选区域 -->
+                    <div class="mb-6 space-y-4">
+                        <!-- 搜索框 -->
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                            <input type="text" id="goal-search" placeholder="搜索目标名称或描述..." 
+                                   class="w-full bg-black/30 backdrop-blur-xl border border-white/10 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:border-purple-400 transition-colors">
+                        </div>
+                        <!-- 标签筛选 -->
+                        <div id="goal-tag-filters" class="flex flex-wrap gap-2">
+                            <!-- 标签筛选按钮由JS生成 -->
+                        </div>
+                    </div>
+                    
+                    <div id="goal-list" class="space-y-6">
+                        <!-- 目标列表由JS生成 -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 长期目标详情页面 -->
+            <div id="page-goal-detail" class="page p-8 hidden">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex items-center gap-4 mb-8">
+                        <button id="back-to-goals" class="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h1 id="goal-detail-title" class="text-3xl font-bold"></h1>
+                    </div>
+                    <!-- 目标详情内容由JS生成 -->
+                    <div id="goal-detail-content"></div>
+                </div>
+            </div>
+            
+            <!-- 心情记录页面 -->
+            <div id="page-mood" class="page p-8 hidden">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-3xl font-bold mb-8">
+                        <i class="fas fa-heart mr-3 text-pink-400"></i>
+                        心情记录
+                    </h1>
+                    
+                    <!-- 记录心情 -->
+                    <div class="bg-black/30 backdrop-blur-xl rounded-2xl p-8 border border-white/10 mb-8">
+                        <h2 class="text-xl font-semibold mb-6">今天感觉怎么样？</h2>
+                        <div class="mb-6">
+                            <div id="mood-options" class="flex flex-wrap gap-4">
+                                <!-- 心情选项由JS生成 -->
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <input type="text" id="custom-mood" placeholder="或输入自定义心情..." 
+                                   class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-400 transition-colors">
+                        </div>
+                        <div class="mb-6">
+                            <textarea id="mood-note" placeholder="添加备注（可选）..." rows="3"
+                                      class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-400 transition-colors resize-none"></textarea>
+                        </div>
+                        <button id="save-mood" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                            保存心情
+                        </button>
+                    </div>
+                    
+                    <!-- 历史记录 -->
+                    <div class="bg-black/30 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+                        <h2 class="text-xl font-semibold mb-6">历史记录</h2>
+                        <div id="mood-history" class="space-y-4">
+                            <!-- 心情历史由JS生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- 模态框容器 -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-overlay"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div id="modal-content" class="bg-slate-800 rounded-2xl border border-white/10 max-w-lg w-full max-h-[90vh] overflow-auto">
+                <!-- 模态框内容由JS生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast 容器 -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    
+    <!-- 加载组件和模块 -->
+    <script src="components/calendar.js"></script>
+    <script src="modules/quote.js"></script>
+    <script src="modules/mood.js"></script>
+    <script src="modules/project.js"></script>
+    <script src="modules/goal.js"></script>
+    <script src="modules/dashboard.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
